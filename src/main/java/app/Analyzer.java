@@ -2,7 +2,9 @@ package app;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -18,18 +20,22 @@ public class Analyzer {
 
 	DecimalFormat df = new DecimalFormat("###.#");
 	
-	String armoFilepath = "C:\\Users\\Mike\\Downloads\\bzccmm\\steamcmd\\steamapps\\workshop\\content\\624970\\2343997862\\BZTC_Races_1\\BZTC_ODF_RACES\\B_odf_black_dogs_squadron\\bbarmo.odf";
-	ArrayList<String> dirs = new ArrayList<String>(Arrays.asList(new String[] {
-			"C:\\Users\\Mike\\Downloads\\bzccmm\\steamcmd\\steamapps\\workshop\\content\\624970\\2343997862\\BZTC_Races_1\\BZTC_ODF_RACES\\B_odf_black_dogs_squadron",
-			"C:\\Users\\Mike\\Downloads\\bzccmm\\steamcmd\\steamapps\\workshop\\content\\624970\\2343997862\\BZTC_Races_1\\BZTC_ODF_WPN\\S_Daywrecker_A",
-			"C:\\Users\\Mike\\Downloads\\bzccmm\\steamcmd\\steamapps\\workshop\\content\\624970\\2343997862\\BZTC_Races_1\\BZTC_ODF_WPN\\N_Service_Pods"
-	}));
+	ArrayList<String> dirs = new ArrayList<String>();
 	List<String> mortarTypes = Arrays.asList(new String[] {"grenade", "bouncebomb", "splintbm", "spraybomb"});
 	List<String> popperTypes = Arrays.asList(new String[] {"radarpopper"});
-	String top = "C:\\Users\\Mike\\Downloads\\bzccmm\\steamcmd\\steamapps\\workshop\\content\\624970\\2343997862\\BZTC_Races_1";
+	String topDirectory = "";
 	
 	public Analyzer() {
-		scanArmo(armoFilepath);
+		Properties p = new Properties();
+		try {
+			p.load(new FileReader("app.properties"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		topDirectory = p.getProperty("topDirectory");
+		
+		scanArmo(p.getProperty("armoFilepath"));
 	}
 
 	private void scanArmo(String armoFilepath) {
@@ -302,7 +308,7 @@ public class Analyzer {
 				return odfFile.getAbsolutePath();
 			}
 		}
-		String newDir = searchDirsForOdf(top, odfName);
+		String newDir = searchDirsForOdf(topDirectory, odfName);
 		if(null != newDir) {
 //			System.out.println(odfName + " is in a new folder " + newDir);
 			dirs.add(newDir);
@@ -312,6 +318,14 @@ public class Analyzer {
 	}
 
 	public static void main(String[] args) {
+//		Properties p = new Properties();
+//		p.setProperty("armoFilepath", "C:\\Users\\Mike\\Downloads\\bzccmm\\steamcmd\\steamapps\\workshop\\content\\624970\\2343997862\\BZTC_Races_1\\BZTC_ODF_RACES\\B_odf_black_dogs_squadron\\bbarmo.odf");
+//		try {
+//			p.store(new FileWriter("app.properties"), "notes");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		new Analyzer();
 	}
 }
